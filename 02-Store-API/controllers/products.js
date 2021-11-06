@@ -66,7 +66,6 @@ const getAllProducts = async (req, res) => {
       if (options.includes(field)) {
         queryObject[field] = { [operator]: Number(value) };
       }
-      console.log(value);
     });
   }
   console.log(queryObject);
