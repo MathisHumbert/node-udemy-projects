@@ -50,10 +50,10 @@ Email Validation Regex
 
 #### Security
 
-- helmet
-- cors
-- xss-clean
-- express-rate-limit
+- helmet - most popular security
+- cors - api accessible to the public
+- xss-clean - protect from attack
+- express-rate-limit - limit the amount of request that a user can make
 
 Swagger UI
 
