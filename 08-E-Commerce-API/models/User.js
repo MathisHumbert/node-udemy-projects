@@ -38,6 +38,7 @@ UserSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+// function linked to the schema that we can only use in the controller
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   console.log(candidatePassword, this.password);
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
