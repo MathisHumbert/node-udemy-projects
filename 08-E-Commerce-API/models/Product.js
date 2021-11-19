@@ -1,9 +1,10 @@
-const moongose = require('mongoose');
+const mongoose = require('mongoose');
 
-const ProductSchema = new moongose.Schema(
+const ProductSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      unique: true,
       trim: true,
       required: [true, 'Please provide product name'],
       maxlength: [100, 'Name can not be more than 100 characters'],
@@ -37,6 +38,7 @@ const ProductSchema = new moongose.Schema(
     },
     colors: {
       type: [String],
+      default: ['#222'],
       required: true,
     },
     featured: {
