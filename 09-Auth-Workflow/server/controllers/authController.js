@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const {
@@ -31,15 +32,12 @@ const register = async (req, res) => {
   });
 
   const origin = 'http://localhost:3000';
-  const protocol = req.protocol;
-  const host = req.get('host');
-  console.log(`protocol: ${protocol}, host: ${host}`);
 
-  const forwardedHost = req.get('x-forwarded-host');
-  const forwardedProtocol = req.get('x-forwarded-proto');
-  console.log(
-    `forwardedprotocol: ${forwardedProtocol}, forwardedhost: ${forwardedHost}`
-  );
+  // const protocol = req.protocol;
+  // const host = req.get('host');
+
+  // const forwardedHost = req.get('x-forwarded-host');
+  // const forwardedProtocol = req.get('x-forwarded-proto');
 
   // send email
   await sendVerificationEmail({
@@ -99,9 +97,21 @@ const login = async (req, res) => {
   }
 
   const tokenUser = createTokenUser(user);
-  attachCookiesToResponse({ res, user: tokenUser });
 
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  // create refresh token
+  let refreshToken = '';
+  // check for existing token
+
+  refreshToken = crypto.randomBytes(40).toString('hex');
+  const userAgent = req.headers['user-agent'];
+  const ip = req.ip;
+  const userToken = { refreshToken, ip, userAgent, user: user._id };
+
+  const token = await Token.create(userToken);
+
+  // attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ user: tokenUser, token });
 };
 const logout = async (req, res) => {
   res.cookie('token', 'logout', {
