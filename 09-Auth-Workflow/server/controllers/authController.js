@@ -101,6 +101,18 @@ const login = async (req, res) => {
   // create refresh token
   let refreshToken = '';
   // check for existing token
+  const existingToken = await Token.findOne({ user: user._id });
+
+  if (existingToken) {
+    const { isValid } = existingToken;
+    if (!isValid) {
+      throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+    refreshToken = existingToken.refreshToken;
+    attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+    res.status(StatusCodes.OK).json({ user: tokenUser });
+    return;
+  }
 
   refreshToken = crypto.randomBytes(40).toString('hex');
   const userAgent = req.headers['user-agent'];
@@ -127,6 +139,3 @@ module.exports = {
   logout,
   verifyEmail,
 };
-
-// end the nodejs tomorow
-// start react js course
