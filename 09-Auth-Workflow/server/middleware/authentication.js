@@ -5,7 +5,6 @@ const Token = require('../models/Token');
 
 const authenticateUser = async (req, res, next) => {
   const { refreshToken, accessToken } = req.signedCookies;
-  console.log(accessToken);
 
   try {
     if (accessToken) {
